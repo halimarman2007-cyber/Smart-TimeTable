@@ -27,13 +27,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://127.0.0.1:8000"],  # or restrict to ["http://localhost:3000"] for Next.js dev
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+
 class TimetableRequest(BaseModel):
     name: str
     start_date: str
@@ -108,3 +102,4 @@ def generate_ics(user_data: TimetableRequest):
         f.write(ics_content)
 
     return FileResponse(filename, media_type="text/calendar", filename=filename)
+
