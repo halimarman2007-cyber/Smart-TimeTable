@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 import json
@@ -28,21 +28,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+
 class TimetableRequest(BaseModel):
     name: str
-    start_date: str
-    days: int
-    hours_per_day: int
+    start_date: str = Field(..., alias="startDate")
+    days: int = Field(..., alias="numberOfDays")
+    hours_per_day: int = Field(..., alias="hoursPerDay")
     subjects: list[str]
-    preferences: str = ""   # default so it’s not required
+    preferences: str = ""
 
     class Config:
         populate_by_name = True
-        fields = {
-            "start_date": "startDate",
-            "days": "numberOfDays",
-            "hours_per_day": "hoursPerDay",
-        }
 
 
 def generate_timetable_logic(user_data: TimetableRequest):
@@ -111,5 +108,6 @@ def generate_ics(user_data: TimetableRequest):
         f.write(ics_content)
 
     return FileResponse(filename, media_type="text/calendar", filename=filename)
+
 
 
