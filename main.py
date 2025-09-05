@@ -34,7 +34,16 @@ class TimetableRequest(BaseModel):
     days: int
     hours_per_day: int
     subjects: list[str]
-    preferences: str
+    preferences: str = ""   # default so it’s not required
+
+    class Config:
+        populate_by_name = True
+        fields = {
+            "start_date": "startDate",
+            "days": "numberOfDays",
+            "hours_per_day": "hoursPerDay",
+        }
+
 
 def generate_timetable_logic(user_data: TimetableRequest):
     model = genai.GenerativeModel("models/gemini-1.5-flash")
@@ -102,4 +111,5 @@ def generate_ics(user_data: TimetableRequest):
         f.write(ics_content)
 
     return FileResponse(filename, media_type="text/calendar", filename=filename)
+
 
